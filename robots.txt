@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jarrod227.github.io/sitemap.xml

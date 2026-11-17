@@ -1,2 +1,34 @@
-# jarrod227.github.io
-Jiayu (Jarrod) Yang — biosignals, embedded systems, and robotics.
+# Jarrod Yang personal website
+
+A responsive, dependency-free portfolio for Jiayu (Jarrod) Yang. Static HTML,
+CSS, and JavaScript are served directly from the repository root by GitHub Pages.
+
+## Update content
+
+Project narratives and shared page markup live in `build.py`. The on-page resume is generated from `resume-content.json`, with the original PDF available for download. Run:
+
+```bash
+python build.py
+```
+
+Edit `style.css` and `script.js` directly for visual and interaction
+changes. They are preserved by the generator. Static assets are in
+`assets/`.
+
+## Content provenance
+
+- Profile photo and ColdLab mark: supplied by Jarrod in this conversation.
+- Resume PDF: converted from the supplied `Jiayu Yang resume v2.docx`.
+- Shared-autonomy project and measured boundaries: the project's public README,
+  https://github.com/jarrod227/emg-shared-autonomy-arm (reviewed 2026-11-17).
+- EMG band image: the same repository, `docs/images/band_worn.jpg` (Apache-2.0).
+- Cursor project: supplied resume, public README, and measured performance at
+  https://github.com/jarrod227/capstone_project/blob/main/docs/performance.md.
+- Cursor video thumbnail: the project's linked YouTube demo, H4pCKZaqN2I.
+- Laika, HD-EMG, and speech decoding contributions: supplied resume v2.
+- SVGs are conceptual diagrams, not captured measurements or PCB manufacturing
+  drawings. No fabricated test results, real-arm results, or lab endorsements.
+
+Live website: https://jarrod227.github.io
+
+GitHub Pages publishes the `main` branch from the repository root.
