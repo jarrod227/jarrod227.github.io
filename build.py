@@ -2,9 +2,11 @@
 from pathlib import Path
 from html import escape
 import json
+from hashlib import sha256
 
 ROOT = Path(__file__).parent
 DIST = ROOT
+ASSET_VERSION = sha256((ROOT / 'night.css').read_bytes() + (ROOT / 'script.js').read_bytes()).hexdigest()[:12]
 ORIGIN = 'https://jarrod227.github.io'
 ARROW = ''
 GITHUB = 'https://github.com/jarrod227'
@@ -165,10 +167,10 @@ def night_scene():
     return '''<div class="night-backdrop" aria-hidden="true"><div class="night-stage"><canvas id="night-sky" class="night-sky"></canvas><div class="typing-hands"></div><div class="screen-glow"></div></div><div class="night-veil"></div></div>'''
 
 def head(title, description, path='/'):
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090f1b"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta property="og:type" content="website"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:image" content="{ORIGIN}/assets/night-studio-v2.webp"><meta property="og:url" content="{ORIGIN}{path}"><link rel="canonical" href="{ORIGIN}{path}"><link rel="icon" type="image/webp" href="/assets/coldlab.webp"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/night.css"><script defer src="/script.js"></script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{night_scene()}<a href="#main" class="skip-link">Skip to content</a>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090f1b"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta property="og:type" content="website"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:image" content="{ORIGIN}/assets/night-studio-v2.webp"><meta property="og:url" content="{ORIGIN}{path}"><link rel="canonical" href="{ORIGIN}{path}"><link rel="icon" type="image/webp" href="/assets/coldlab.webp"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/night.css?v={ASSET_VERSION}"><script defer src="/script.js?v={ASSET_VERSION}"></script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{night_scene()}<a href="#main" class="skip-link">Skip to content</a>'''
 
 def header():
-    return f'''<header class="site-header"><div class="container nav-wrap"><a href="/" class="brand" aria-label="Jarrod Yang home"><span class="brand-mark">JY</span><span>JARROD YANG</span></a><button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation"><span></span><span></span></button><nav id="navigation" aria-label="Main navigation"><a href="/#work">Work</a><a href="/#research">Research</a><a href="/#about">About</a><a href="/#contact">Contact</a><a href="/resume.html" class="nav-resume">Resume {ARROW}</a></nav></div></header>'''
+    return f'''<header class="site-header"><div class="container nav-wrap"><a href="/" class="brand" aria-label="Jarrod Yang home"><span class="brand-avatar"><img src="/assets/jarrod-yang.webp" alt="" width="44" height="44" decoding="async"></span><span>JARROD YANG</span></a><button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation"><span></span><span></span></button><nav id="navigation" aria-label="Main navigation"><a href="/#work">Work</a><a href="/#research">Research</a><a href="/#about">About</a><a href="/#contact">Contact</a><a href="/resume.html" class="nav-resume">Resume {ARROW}</a></nav></div></header>'''
 
 def footer():
     return f'''<footer><div class="container footer-inner"><a href="/" class="footer-name">Jiayu (Jarrod) Yang</a><span>Pittsburgh, PA</span><a href="#top">Back to top</a></div></footer><div class="toast" role="status" aria-live="polite"></div></body></html>'''
