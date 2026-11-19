@@ -246,36 +246,27 @@ function createPCFans() {
   const ctx = canvas?.getContext('2d');
   if (!ctx || !stage) return { fit() {}, draw() {} };
   const width = 240, height = 480;
+  const artwork = new Image();
+  artwork.src = '/assets/night-workbench-v4.webp';
   ctx.setTransform(2, 0, 0, 2, 0, 0);
   const fit = () => fitArtworkScreen(canvas, stage, width, height,
     [[865, 765], [918, 757], [921, 879], [865, 890]]);
   const draw = clock => {
     ctx.clearRect(0, 0, width, height);
-    const breath = 0.9 + Math.sin(clock * Math.PI * 2 / 8.5) * 0.1;
-    for (const [y, offset] of [[126, 0], [329, 0.8]]) {
+    if (!artwork.complete || !artwork.naturalWidth) return;
+    const breath = 0.94 + Math.sin(clock * Math.PI * 2 / 8.5) * 0.06;
+    for (const [y, sourceY, offset] of [[126, 793, 0], [329, 846, 0.8]]) {
       ctx.save();ctx.translate(104, y);
-      ctx.beginPath();ctx.arc(0, 0, 77, 0, Math.PI * 2);ctx.clip();
-      const shade = ctx.createRadialGradient(0, 0, 8, 0, 0, 77);
-      shade.addColorStop(0, '#0b1720bd');shade.addColorStop(0.75, '#0a15229e');
-      shade.addColorStop(1, '#0a152200');ctx.fillStyle = shade;ctx.fillRect(-78, -78, 156, 156);
+      ctx.beginPath();ctx.arc(0, 0, 73, 0, Math.PI * 2);ctx.clip();
       ctx.save();ctx.rotate(clock * Math.PI * 2 / 11.5 + offset);
-      for (let i = 0; i < 7; i++) {
-        ctx.rotate(Math.PI * 2 / 7);ctx.beginPath();ctx.moveTo(13, -8);
-        ctx.bezierCurveTo(34, -32, 67, -33, 68, -5);
-        ctx.quadraticCurveTo(39, -15, 16, 13);ctx.closePath();
-        ctx.fillStyle = `rgba(49,101,129,${0.46 * breath})`;ctx.fill();
-        ctx.strokeStyle = `rgba(69,143,174,${0.38 * breath})`;ctx.lineWidth = 1;ctx.stroke();
-      }
+      // Reuse the painted fan texture so its material and light stay part of the scene.
+      ctx.globalAlpha = breath;
+      ctx.drawImage(artwork, 871, sourceY - 21, 34, 42, -82, -82, 164, 164);
       ctx.restore();
-      ctx.beginPath();ctx.arc(0, 0, 62, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(59,149,189,${0.38 * breath})`;ctx.lineWidth = 4;
-      ctx.shadowColor = '#3488b4';ctx.shadowBlur = 10 * breath;ctx.stroke();ctx.shadowBlur = 0;
-      ctx.beginPath();ctx.arc(0, 0, 15, 0, Math.PI * 2);
-      ctx.fillStyle = '#10242f';ctx.fill();ctx.strokeStyle = '#31586b66';ctx.lineWidth = 2;ctx.stroke();
-      // The grille stays fixed in front of the moving blades.
-      ctx.fillStyle = '#050c12a6';
+      // A fixed perforated grille sits in front of the turning rotor.
+      ctx.fillStyle = '#050c1240';
       for (let row = -8; row <= 8; row++) for (let col = -9; col <= 9; col++) {
-        ctx.beginPath();ctx.arc(col * 8 + (row % 2 ? 4 : 0), row * 8, 2, 0, Math.PI * 2);ctx.fill();
+        ctx.beginPath();ctx.arc(col * 8 + (row % 2 ? 4 : 0), row * 8, 1.5, 0, Math.PI * 2);ctx.fill();
       }
       ctx.restore();
     }
