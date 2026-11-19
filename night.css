@@ -54,3 +54,7 @@ body{font-size:16px;line-height:1.85;background:var(--bg);isolation:isolate}body
 
 .desk-pet-screen{position:absolute;left:0;top:0;width:300px;height:200px;transform-origin:0 0;pointer-events:none;opacity:0;backface-visibility:hidden;clip-path:inset(0 round 12px)}
 .home-page .desk-pet-screen.is-ready{opacity:1}
+.desk-pet-rest,.desk-pet-head{position:absolute;inset:0;pointer-events:none;opacity:0;clip-path:polygon(54.52% 61.85%,55.18% 60.57%,56.19% 59.94%,59.31% 59.51%,59.61% 59.94%,60.32% 65.36%,59.96% 66.1%,55.6% 67.38%,55.06% 66.84%)}
+.desk-pet-rest{background:linear-gradient(173deg,#123449 59%,#183142 68%)}
+.desk-pet-head{background:inherit;transform-origin:57.45% 67.48%}
+.home-page .pet-ready .desk-pet-rest,.home-page .pet-ready .desk-pet-head{opacity:1}

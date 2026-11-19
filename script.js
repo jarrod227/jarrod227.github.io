@@ -246,16 +246,19 @@ function createDeskPet() {
   const stage = document.querySelector('.night-stage');
   const ctx = canvas?.getContext('2d');
   if (!ctx || !stage) return { fit() {}, draw() {}, setActive() {} };
+  const head = stage.querySelector('.desk-pet-head');
   const width = 300, height = 200;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   ctx.setTransform(2, 0, 0, 2, 0, 0);
   let active = false;
   let mode = 'clock', previousFace = '';
   let startsAt = 0, endsAt = 0, nextAt = 0, lastPaint = '';
-  const faces = ['smile', 'blush', 'cat'];
+  const faces = ['smile', 'blush', 'cat', 'wink', 'sleepy', 'surprised', 'hearts', 'happy'];
+  let gesture = '';
   const fit = () => {
     fitArtworkScreen(canvas, stage, width, height,
       [[943, 574], [989, 570], [997, 601], [952, 606]]);
+    stage.classList.add('pet-ready');
     lastPaint = '';
     draw();
   };
@@ -264,6 +267,11 @@ function createDeskPet() {
   };
   const smile = (x, y, radius) => {
     ctx.beginPath();ctx.arc(x, y, radius, Math.PI * 0.12, Math.PI * 0.88);ctx.stroke();
+  };
+  const heart = (x, y) => {
+    ctx.beginPath();ctx.moveTo(x, y + 23);
+    ctx.bezierCurveTo(x - 48, y - 6, x - 24, y - 38, x, y - 15);
+    ctx.bezierCurveTo(x + 24, y - 38, x + 48, y - 6, x, y + 23);ctx.fill();
   };
   const cat = age => {
     // A brief pop-in on the OLED, with a hand-drawn cat face rather than a font dependency.
@@ -304,12 +312,23 @@ function createDeskPet() {
     if (reducedMotion.matches) mode = 'clock';
     else if (mode !== 'clock' && now >= endsAt) {
       mode = 'clock';
-      nextAt = now + 18000 + Math.random() * 16000;
+      nextAt = now + 6000 + Math.random() * 5000;
     } else if (mode === 'clock' && now >= nextAt) {
       const choices = faces.filter(face => face !== previousFace);
       mode = choices[Math.floor(Math.random() * choices.length)];
       previousFace = mode;startsAt = now;
-      endsAt = now + 2900 + Math.random() * 1300;
+      endsAt = now + 3200 + Math.random() * 1300;
+      gesture = Math.random() < 0.55 ? (Math.random() < 0.5 ? 'sway' : 'nod') : '';
+    }
+    // Move the illustrated head and its OLED together; the pedestal stays still.
+    const age = (now - startsAt) / 1000;
+    if (head) {
+      const moving = mode !== 'clock' && !reducedMotion.matches && gesture;
+      const envelope = moving ? Math.max(0, Math.min(1, age / 0.35, (endsAt - now) / 450)) : 0;
+      const wave = Math.sin(age * (gesture === 'nod' ? 6 : 4.5)) * envelope;
+      head.style.transform = gesture === 'nod'
+        ? `translateY(${wave * 1.5}px) scaleY(${1 - Math.abs(wave) * 0.035})`
+        : `rotate(${wave * 4}deg)`;
     }
     const date = new Date();
     const hour = String(date.getHours()).padStart(2, '0');
@@ -329,7 +348,6 @@ function createDeskPet() {
       ctx.fillStyle = '#d5f7ee';ctx.shadowColor = '#7edcc9';ctx.shadowBlur = 8;
       ctx.fillText(`${hour}${colonVisible ? ':' : ' '}${minute}`, 150, 102);
     } else {
-      const age = (now - startsAt) / 1000;
       ctx.globalAlpha = Math.min(1, age / 0.15, (endsAt - now) / 300);
       ctx.translate(0, Math.sin(age * 2.4) * 2);
       ctx.fillStyle = '#f5f2df';ctx.strokeStyle = '#f5f2df';ctx.lineWidth = 10;
@@ -345,20 +363,47 @@ function createDeskPet() {
           ctx.beginPath();ctx.ellipse(x, 106, 24, 12, -0.15, 0, Math.PI * 2);ctx.fill();
         }
       } else if (mode === 'cat') cat(age);
+      else if (mode === 'wink') {
+        eye(94, 81, 10);
+        ctx.beginPath();ctx.moveTo(190, 73);ctx.lineTo(211, 84);ctx.lineTo(190, 95);ctx.stroke();
+        smile(150, 102, 27);
+      } else if (mode === 'sleepy') {
+        for (const x of [94, 206]) {
+          ctx.beginPath();ctx.moveTo(x - 20, 90);ctx.quadraticCurveTo(x, 103, x + 20, 90);ctx.stroke();
+        }
+        ctx.lineWidth = 6;ctx.beginPath();ctx.ellipse(150, 131, 9, 5, 0, 0, Math.PI * 2);ctx.stroke();
+        ctx.font = '600 32px ui-monospace, monospace';ctx.fillStyle = '#9edcfa';
+        ctx.fillText('z', 244, 50 + Math.sin(age * 2) * 5);
+      } else if (mode === 'surprised') {
+        for (const x of [94, 206]) {
+          ctx.beginPath();ctx.ellipse(x, 78, 13, 22, 0, 0, Math.PI * 2);ctx.fill();
+        }
+        ctx.lineWidth = 7;ctx.beginPath();ctx.ellipse(150, 133, 17, 23, 0, 0, Math.PI * 2);ctx.stroke();
+      } else if (mode === 'hearts') {
+        ctx.fillStyle = '#f29bb6';heart(91, 78);heart(209, 78);
+        smile(150, 112, 23);
+      } else if (mode === 'happy') {
+        for (const x of [92, 208]) {
+          ctx.beginPath();ctx.moveTo(x - 20, 92);ctx.lineTo(x, 72);ctx.lineTo(x + 20, 92);ctx.stroke();
+        }
+        ctx.beginPath();ctx.moveTo(120, 120);ctx.lineTo(180, 120);
+        ctx.quadraticCurveTo(150, 175, 120, 120);ctx.fill();
+      }
     }
     ctx.restore();
   };
   const setActive = value => {
     if (active === value) return;
     active = value;mode = 'clock';lastPaint = '';
-    nextAt = performance.now() + 8000 + Math.random() * 6000;
+    if (head) head.style.transform = '';
+    nextAt = performance.now() + 3000 + Math.random() * 3000;
     if (active) draw();
   };
   // Continue updating the clock with reduced motion, even while ambient RAF is stopped.
   setInterval(draw, 1000);
   reducedMotion.addEventListener('change', () => {
     mode = 'clock';lastPaint = '';
-    nextAt = performance.now() + 8000 + Math.random() * 6000;
+    nextAt = performance.now() + 3000 + Math.random() * 3000;
     draw();
   });
   return { fit, draw, setActive };
