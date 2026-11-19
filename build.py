@@ -202,7 +202,7 @@ def card(p, featured=False):
 
 def home():
     desc='Jiayu (Jarrod) Yang is a CMU graduate researcher working across biosignal sensing, embedded systems, and robotics. Explore selected projects and research.'
-    html=head('Jiayu (Jarrod) Yang — Biosignals, Embedded Systems & Robotics',desc)+header()
+    html=head('Jarrod Yang’s Website',desc)+header()
     html+=f'''<main id="main"><section class="hero container" id="top"><div class="hero-copy"><h1 class="name-heading">Jiayu (Jarrod) Yang</h1><p class="affiliation">Graduate Researcher · Neuromechatronics Lab<br>Carnegie Mellon University</p><p class="hero-description">I develop biosignal interfaces, embedded firmware, and robotic systems.</p><div class="hero-actions"><a href="#work" class="button button-primary">Explore my work </a><a href="/resume.html" class="button button-secondary">Resume {ARROW}</a></div><div class="quick-links" aria-label="Profile links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}{ext('/#contact','Email')}</div></div><button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false" aria-label="Pause animated stars">Pause sky</button></section>
     <section id="about" class="container about-section">
       <div class="about-heading"><div><p class="eyebrow">ABOUT</p><h2>About me</h2></div></div>
