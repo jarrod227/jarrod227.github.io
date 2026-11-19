@@ -87,7 +87,8 @@ function createCodeScreen() {
   const stage = document.querySelector('.night-stage');
   const ctx = canvas?.getContext('2d');
   if (!ctx || !stage) return { fit() {}, draw() {} };
-  const width = 480, height = 640, rowHeight = 26;
+  const width = 640, height = 440, rowHeight = 26;
+  const openingRow = 19, caretRow = 11;
   ctx.setTransform(2, 0, 0, 2, 0, 0);
   const lines = [
     '// Biosignals to shared autonomy',
@@ -136,16 +137,16 @@ function createCodeScreen() {
   ];
   const durations = lines.map(line => Math.max(0.4, line.length / 10) + 0.7);
   const period = durations.reduce((sum, value) => sum + value, 0);
-  const opening = durations.slice(0, 19).reduce((sum, value) => sum + value, 0) + 1;
+  const opening = durations.slice(0, openingRow).reduce((sum, value) => sum + value, 0) + 1;
   const keywords = new Set(['const', 'constexpr', 'int', 'void', 'auto', 'if', 'while', 'return', '#include']);
   const tokenPattern = /\/\/.*$|"[^"\n]*"|#[a-z]+|[A-Za-z_]\w*|\d+|\s+|./g;
-  let scroll = 0;
+  let scroll = (openingRow - caretRow) * rowHeight;
 
   const fit = () => {
     const bounds = stage.getBoundingClientRect();
-    // Inset inside the existing bezel; coordinates refer to the 1672 × 941 artwork.
-    const points = [[908, 570], [1036, 579], [1083, 729], [968, 759]]
-      .map(([x, y]) => [x * bounds.width / 1672, y * bounds.height / 941]);
+    // Inset inside the existing bezel; coordinates refer to the 1671 × 941 artwork.
+    const points = [[1091, 487], [1249, 484], [1280, 591], [1126, 610]]
+      .map(([x, y]) => [x * bounds.width / 1671, y * bounds.height / 941]);
     const [p0, p1, p2, p3] = points;
     const dx1 = p1[0] - p2[0], dx2 = p3[0] - p2[0];
     const dy1 = p1[1] - p2[1], dy2 = p3[1] - p2[1];
@@ -191,11 +192,11 @@ function createCodeScreen() {
     }
     const current = cycle * lines.length + row;
     const count = Math.min(lines[row].length, Math.floor(position * 10));
-    const target = Math.max(0, (current - 17) * rowHeight);
+    const target = Math.max(0, (current - caretRow) * rowHeight);
     scroll += (target - scroll) * (1 - Math.exp(-delta * 0.75));
     const background = ctx.createLinearGradient(0, 0, width, height);
-    background.addColorStop(0, '#10263e');
-    background.addColorStop(1, '#12324a');
+    background.addColorStop(0, '#0d1a2e');
+    background.addColorStop(1, '#102339');
     ctx.fillStyle = background;
     ctx.fillRect(0, 0, width, height);
     ctx.save();
@@ -223,12 +224,12 @@ function createCodeScreen() {
       }
     }
     ctx.restore();
-    ctx.fillStyle = '#18364e';
+    ctx.fillStyle = '#16263c';
     ctx.fillRect(0, 0, width, 39);
     ctx.fillStyle = '#8faabb';
     ctx.font = '14px ui-monospace, "Courier New", monospace';
     ctx.fillText('intent_controller.cpp', 19, 26);
-    ctx.fillStyle = '#1a3b52';
+    ctx.fillStyle = '#142a3f';
     ctx.fillRect(0, height - 22, width, 22);
     ctx.fillStyle = '#7296ab';
     ctx.font = '12px ui-monospace, "Courier New", monospace';
@@ -282,7 +283,7 @@ function createCodeScreen() {
       }
     }
     // The first shooting star appears shortly after arrival, then occasionally.
-    // Both paths fit inside this canvas, above the laptop and between the frames.
+    // Both paths fit inside this canvas, above the equipment and between the window frames.
     for (const meteor of [
       { period: 10, delay: 1.5, x: 0.87, y: 0.1, dx: 0.43, dy: 0.4 },
       { period: 17, delay: 6.5, x: 0.62, y: 0.22, dx: 0.35, dy: 0.32 }
