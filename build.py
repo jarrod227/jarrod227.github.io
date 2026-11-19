@@ -139,6 +139,8 @@ def ext(url, label, cls='text-link'):
     hostname = (urlsplit(url).hostname or '').removeprefix('www.')
     brand = {'github.com': 'github', 'linkedin.com': 'linkedin',
              'instagram.com': 'instagram', 'xiaohongshu.com': 'xiaohongshu'}.get(hostname)
+    if label == 'Email' or url.startswith('mailto:'):
+        brand = 'email'
     icon = ''
     if brand:
         cls += ' social-link'
@@ -177,7 +179,7 @@ def write_visuals():
     (a/'brain.svg').write_text(svg_shell(brain,'Conceptual pipeline from neural activity through GRU CTC phoneme modeling to language decoding'))
 
 def night_scene():
-    return '''<div class="night-backdrop" aria-hidden="true"><div class="night-stage"><canvas id="night-sky" class="night-sky"></canvas><div class="typing-hands"></div><div class="screen-glow"></div></div><div class="night-veil"></div></div>'''
+    return '''<div class="night-backdrop" aria-hidden="true"><div class="night-stage"><canvas id="night-sky" class="night-sky"></canvas><canvas id="code-screen" class="code-screen" width="960" height="1280"></canvas><div class="typing-hands"></div></div><div class="night-veil"></div></div>'''
 
 def head(title, description, path='/'):
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090f1b"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta property="og:type" content="website"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:image" content="{ORIGIN}/assets/night-studio-v2.webp"><meta property="og:url" content="{ORIGIN}{path}"><link rel="canonical" href="{ORIGIN}{path}"><link rel="icon" type="image/webp" href="/assets/coldlab.webp"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/night.css?v={ASSET_VERSION}"><script defer src="/script.js?v={ASSET_VERSION}"></script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{night_scene()}<a href="#main" class="skip-link">Skip to content</a>'''
@@ -203,7 +205,7 @@ def card(p, featured=False):
 def home():
     desc='Jiayu (Jarrod) Yang is a CMU graduate researcher working across biosignal sensing, embedded systems, and robotics. Explore selected projects and research.'
     html=head('Jarrod Yang’s Website',desc)+header()
-    html+=f'''<main id="main"><section class="hero container" id="top"><div class="hero-copy"><h1 class="name-heading">Jiayu (Jarrod) Yang</h1><p class="affiliation">Graduate Researcher · Neuromechatronics Lab<br>Carnegie Mellon University</p><p class="hero-description">I develop biosignal interfaces, embedded firmware, and robotic systems.</p><div class="hero-actions"><a href="#work" class="button button-primary">Explore my work </a><a href="/resume.html" class="button button-secondary">Resume {ARROW}</a></div><div class="quick-links" aria-label="Profile links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}{ext('/#contact','Email')}</div></div><button class="motion-toggle" id="motion-toggle" type="button" aria-pressed="false" aria-label="Pause animated stars">Pause sky</button></section>
+    html+=f'''<main id="main"><section class="hero container" id="top"><div class="hero-copy"><h1 class="name-heading">Jiayu (Jarrod) Yang</h1><p class="affiliation">Graduate Researcher · Neuromechatronics Lab<br>Carnegie Mellon University</p><p class="hero-description">I develop biosignal interfaces, embedded firmware, and robotic systems.</p><div class="hero-actions"><a href="#work" class="button button-primary">Explore my work </a><a href="/resume.html" class="button button-secondary">Resume {ARROW}</a></div><div class="quick-links" aria-label="Profile links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}{ext('mailto:'+EMAIL,'Email')}</div></div></section>
     <section id="about" class="container about-section">
       <div class="about-heading"><div><p class="eyebrow">ABOUT</p><h2>About me</h2></div></div>
       <div class="about-profile">
@@ -215,7 +217,7 @@ def home():
     for i,p in enumerate(projects[:4]): html+=card(p,i==0)
     html+=f'''</div><a class="more-project" href="/projects/brain-to-text.html"><div><span class="eyebrow">ALSO EXPLORING / NEURAL DECODING</span><h3>Brain-to-text speech decoding</h3><p>A PyTorch sequence-modeling pipeline, five ablation variants, and an end-to-end lesson about decoding.</p></div><span class="more-arrow" aria-hidden="true">{ARROW}</span></a></section>
     <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel rigid-flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, and checking channel connectivity before manufacturing review.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>500 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
-    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><span class="email-address">{EMAIL}</span></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("https://mail.google.com/mail/?view=cm&fs=1&to="+EMAIL,"Compose in Gmail")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
+    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
     html+=footer()
     (DIST/'index.html').write_text(html)
 
@@ -245,7 +247,7 @@ def resume_rich_text(text):
 
 def resume():
     html=head('Resume — Jiayu (Jarrod) Yang','Read or download Jiayu Yang’s resume: CMU research, embedded systems, robotics, and biosignal projects.','/resume.html')+header()
-    html+=f'''<main id="main"><section class="container resume-hero" id="top"><a href="/" class="back-link">Home</a><p class="eyebrow">RESUME</p><div class="resume-title-row"><div><h1>Jiayu (Jarrod) Yang</h1><p>Graduate Researcher · Carnegie Mellon University</p></div><a class="button button-primary" href="/assets/jiayu-yang-resume.pdf?v={RESUME_PDF_VERSION}" download="Jiayu-Yang-Resume.pdf">Download PDF </a></div><div class="resume-contact">{ext('/#contact','Email')}{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}</div></section><article class="container resume-document" aria-label="Resume content">'''
+    html+=f'''<main id="main"><section class="container resume-hero" id="top"><a href="/" class="back-link">Home</a><p class="eyebrow">RESUME</p><div class="resume-title-row"><div><h1>Jiayu (Jarrod) Yang</h1><p>Graduate Researcher · Carnegie Mellon University</p></div><a class="button button-primary" href="/assets/jiayu-yang-resume.pdf?v={RESUME_PDF_VERSION}" download="Jiayu-Yang-Resume.pdf">Download PDF </a></div><div class="resume-contact">{ext('mailto:'+EMAIL,'Email')}{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}</div></section><article class="container resume-document" aria-label="Resume content">'''
     sections={'Education','Skills','Research Experience','Projects'}
     titles={
         'Carnegie Mellon University | Pittsburgh, PA, USA',
