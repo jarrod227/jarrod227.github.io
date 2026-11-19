@@ -82,6 +82,31 @@
 })();
 
 // A small code editor projected onto the illustration's four LCD corners.
+function fitArtworkScreen(canvas, stage, width, height, corners) {
+    const bounds = stage.getBoundingClientRect();
+    const points = corners
+      .map(([x, y]) => [x * bounds.width / 1671, y * bounds.height / 941]);
+    const [p0, p1, p2, p3] = points;
+    const dx1 = p1[0] - p2[0], dx2 = p3[0] - p2[0];
+    const dy1 = p1[1] - p2[1], dy2 = p3[1] - p2[1];
+    const dx3 = p0[0] - p1[0] + p2[0] - p3[0];
+    const dy3 = p0[1] - p1[1] + p2[1] - p3[1];
+    const denominator = dx1 * dy2 - dx2 * dy1;
+    if (Math.abs(denominator) < 0.001) return;
+    const g = (dx3 * dy2 - dx2 * dy3) / denominator;
+    const h = (dx1 * dy3 - dx3 * dy1) / denominator;
+    const a = p1[0] - p0[0] + g * p1[0];
+    const b = p3[0] - p0[0] + h * p3[0];
+    const d = p1[1] - p0[1] + g * p1[1];
+    const e = p3[1] - p0[1] + h * p3[1];
+    canvas.style.transform = `matrix3d(${[
+      a / width, d / width, 0, g / width,
+      b / height, e / height, 0, h / height,
+      0, 0, 1, 0, p0[0], p0[1], 0, 1
+    ].join(',')})`;
+    canvas.classList.add('is-ready');
+}
+
 function createCodeScreen() {
   const canvas = document.getElementById('code-screen');
   const stage = document.querySelector('.night-stage');
@@ -142,31 +167,8 @@ function createCodeScreen() {
   const tokenPattern = /\/\/.*$|"[^"\n]*"|#[a-z]+|[A-Za-z_]\w*|\d+|\s+|./g;
   let scroll = (openingRow - caretRow) * rowHeight;
 
-  const fit = () => {
-    const bounds = stage.getBoundingClientRect();
-    // Inset inside the existing bezel; coordinates refer to the 1671 × 941 artwork.
-    const points = [[1091, 487], [1249, 484], [1280, 591], [1126, 610]]
-      .map(([x, y]) => [x * bounds.width / 1671, y * bounds.height / 941]);
-    const [p0, p1, p2, p3] = points;
-    const dx1 = p1[0] - p2[0], dx2 = p3[0] - p2[0];
-    const dy1 = p1[1] - p2[1], dy2 = p3[1] - p2[1];
-    const dx3 = p0[0] - p1[0] + p2[0] - p3[0];
-    const dy3 = p0[1] - p1[1] + p2[1] - p3[1];
-    const denominator = dx1 * dy2 - dx2 * dy1;
-    if (Math.abs(denominator) < 0.001) return;
-    const g = (dx3 * dy2 - dx2 * dy3) / denominator;
-    const h = (dx1 * dy3 - dx3 * dy1) / denominator;
-    const a = p1[0] - p0[0] + g * p1[0];
-    const b = p3[0] - p0[0] + h * p3[0];
-    const d = p1[1] - p0[1] + g * p1[1];
-    const e = p3[1] - p0[1] + h * p3[1];
-    canvas.style.transform = `matrix3d(${[
-      a / width, d / width, 0, g / width,
-      b / height, e / height, 0, h / height,
-      0, 0, 1, 0, p0[0], p0[1], 0, 1
-    ].join(',')})`;
-    canvas.classList.add('is-ready');
-  };
+  const fit = () => fitArtworkScreen(canvas, stage, width, height,
+    [[1091, 487], [1249, 484], [1280, 591], [1126, 610]]);
 
   const drawLine = (text, x, y) => {
     const tokens = text.match(tokenPattern) || [];
@@ -238,6 +240,130 @@ function createCodeScreen() {
   return { fit, draw };
 }
 
+// The desk companion shows the visitor's local time between occasional expressions.
+function createDeskPet() {
+  const canvas = document.getElementById('desk-pet-screen');
+  const stage = document.querySelector('.night-stage');
+  const ctx = canvas?.getContext('2d');
+  if (!ctx || !stage) return { fit() {}, draw() {}, setActive() {} };
+  const width = 300, height = 200;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  ctx.setTransform(2, 0, 0, 2, 0, 0);
+  let active = false;
+  let mode = 'clock', previousFace = '';
+  let startsAt = 0, endsAt = 0, nextAt = 0, lastPaint = '';
+  const faces = ['smile', 'blush', 'cat'];
+  const fit = () => {
+    fitArtworkScreen(canvas, stage, width, height,
+      [[943, 574], [989, 570], [997, 601], [952, 606]]);
+    lastPaint = '';
+    draw();
+  };
+  const eye = (x, y, radius = 7) => {
+    ctx.beginPath();ctx.arc(x, y, radius, 0, Math.PI * 2);ctx.fill();
+  };
+  const smile = (x, y, radius) => {
+    ctx.beginPath();ctx.arc(x, y, radius, Math.PI * 0.12, Math.PI * 0.88);ctx.stroke();
+  };
+  const cat = age => {
+    // A brief pop-in on the OLED, with a hand-drawn cat face rather than a font dependency.
+    const t = Math.min(1, age / 0.42);
+    const pop = 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2);
+    ctx.translate(150, 105 + (1 - t) * 25);
+    ctx.scale(0.9 * pop, 0.9 * pop);
+    ctx.translate(-150, -105);
+    ctx.fillStyle = '#f3d597';
+    ctx.beginPath();
+    ctx.moveTo(80, 83);ctx.lineTo(84, 31);ctx.lineTo(119, 56);
+    ctx.quadraticCurveTo(150, 44, 181, 56);
+    ctx.lineTo(216, 31);ctx.lineTo(220, 83);
+    ctx.quadraticCurveTo(247, 130, 203, 159);
+    ctx.quadraticCurveTo(150, 182, 97, 159);
+    ctx.quadraticCurveTo(53, 130, 80, 83);ctx.fill();
+    ctx.fillStyle = '#dc9a9e';
+    for (const [x, direction] of [[90, 1], [210, -1]]) {
+      ctx.beginPath();ctx.moveTo(x, 48);ctx.lineTo(x + direction * 20, 63);
+      ctx.lineTo(x, 77);ctx.closePath();ctx.fill();
+    }
+    ctx.fillStyle = '#3b3033';eye(112, 104, 7);eye(188, 104, 7);
+    ctx.fillStyle = '#c7828b';ctx.beginPath();
+    ctx.moveTo(141, 119);ctx.lineTo(159, 119);ctx.lineTo(150, 128);ctx.closePath();ctx.fill();
+    ctx.strokeStyle = '#72544a';ctx.lineWidth = 4;
+    ctx.beginPath();ctx.moveTo(150, 128);ctx.quadraticCurveTo(144, 141, 135, 132);
+    ctx.moveTo(150, 128);ctx.quadraticCurveTo(156, 141, 165, 132);ctx.stroke();
+    for (const side of [-1, 1]) {
+      for (let row = 0; row < 3; row++) {
+        ctx.beginPath();ctx.moveTo(150 + side * 47, 118 + row * 10);
+        ctx.lineTo(150 + side * 79, 111 + row * 17);ctx.stroke();
+      }
+    }
+  };
+  const draw = () => {
+    if (!active || document.hidden) return;
+    const now = performance.now();
+    if (reducedMotion.matches) mode = 'clock';
+    else if (mode !== 'clock' && now >= endsAt) {
+      mode = 'clock';
+      nextAt = now + 18000 + Math.random() * 16000;
+    } else if (mode === 'clock' && now >= nextAt) {
+      const choices = faces.filter(face => face !== previousFace);
+      mode = choices[Math.floor(Math.random() * choices.length)];
+      previousFace = mode;startsAt = now;
+      endsAt = now + 2900 + Math.random() * 1300;
+    }
+    const date = new Date();
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    const time = `${hour}:${minute}`;
+    const colonVisible = reducedMotion.matches || date.getSeconds() % 2 === 0;
+    const key = mode === 'clock' ? `${time}:${colonVisible}` : `${mode}:${Math.floor(now / 33)}`;
+    if (canvas.dataset.time !== time) canvas.dataset.time = time;
+    if (canvas.dataset.mode !== mode) canvas.dataset.mode = mode;
+    if (key === lastPaint) return;
+    lastPaint = key;
+    ctx.fillStyle = '#090f15';ctx.fillRect(0, 0, width, height);
+    ctx.save();ctx.lineCap = 'round';
+    if (mode === 'clock') {
+      ctx.textAlign = 'center';ctx.textBaseline = 'middle';
+      ctx.font = '600 64px ui-monospace, "Courier New", monospace';
+      ctx.fillStyle = '#d5f7ee';ctx.shadowColor = '#7edcc9';ctx.shadowBlur = 8;
+      ctx.fillText(`${hour}${colonVisible ? ':' : ' '}${minute}`, 150, 102);
+    } else {
+      const age = (now - startsAt) / 1000;
+      ctx.globalAlpha = Math.min(1, age / 0.15, (endsAt - now) / 300);
+      ctx.translate(0, Math.sin(age * 2.4) * 2);
+      ctx.fillStyle = '#f5f2df';ctx.strokeStyle = '#f5f2df';ctx.lineWidth = 10;
+      if (mode === 'smile') {
+        for (const x of [91, 209]) {
+          ctx.beginPath();ctx.arc(x, 86, 17, Math.PI, Math.PI * 2);ctx.stroke();
+        }
+        smile(150, 96, 34);
+      } else if (mode === 'blush') {
+        eye(96, 79);eye(204, 79);smile(150, 102, 21);
+        ctx.fillStyle = '#ed8ca6';ctx.globalAlpha *= 0.7;
+        for (const x of [57, 243]) {
+          ctx.beginPath();ctx.ellipse(x, 106, 24, 12, -0.15, 0, Math.PI * 2);ctx.fill();
+        }
+      } else if (mode === 'cat') cat(age);
+    }
+    ctx.restore();
+  };
+  const setActive = value => {
+    if (active === value) return;
+    active = value;mode = 'clock';lastPaint = '';
+    nextAt = performance.now() + 8000 + Math.random() * 6000;
+    if (active) draw();
+  };
+  // Continue updating the clock with reduced motion, even while ambient RAF is stopped.
+  setInterval(draw, 1000);
+  reducedMotion.addEventListener('change', () => {
+    mode = 'clock';lastPaint = '';
+    nextAt = performance.now() + 8000 + Math.random() * 6000;
+    draw();
+  });
+  return { fit, draw, setActive };
+}
+
 // Window-only ambient motion. The artwork stays visible without JavaScript.
 (() => {
   const canvas = document.getElementById('night-sky');
@@ -246,6 +372,7 @@ function createCodeScreen() {
   if (!context) return;
 
   const codeScreen = createCodeScreen();
+  const deskPet = createDeskPet();
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let paused = reducedMotion.matches;
   let visible = true;
@@ -317,6 +444,7 @@ function createCodeScreen() {
     }
     context.globalAlpha = 1;
     codeScreen.draw(clock, delta);
+    deskPet.draw();
   };
 
   const resize = () => {
@@ -337,6 +465,7 @@ function createCodeScreen() {
       blue: random() > 0.6
     }));
     codeScreen.fit();
+    deskPet.fit();
     render();
   };
 
@@ -354,6 +483,7 @@ function createCodeScreen() {
   };
   const sync = () => {
     document.body.classList.toggle('ambient-paused', paused || !visible || document.hidden);
+    deskPet.setActive(visible && !document.hidden);
     cancelAnimationFrame(frame);
     frame = 0;
     lastTime = 0;
