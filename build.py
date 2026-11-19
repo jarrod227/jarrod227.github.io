@@ -134,7 +134,7 @@ projects = [
 ]
 
 def ext(url, label, cls='text-link'):
-    outside = not url.startswith(('mailto:', '/'))
+    outside = not url.startswith(('/', '#'))
     attrs = ' target="_blank" rel="noopener noreferrer"' if outside else ''
     hostname = (urlsplit(url).hostname or '').removeprefix('www.')
     brand = {'github.com': 'github', 'linkedin.com': 'linkedin',
@@ -217,7 +217,7 @@ def home():
     for i,p in enumerate(projects[:4]): html+=card(p,i==0)
     html+=f'''</div><a class="more-project" href="/projects/brain-to-text.html"><div><span class="eyebrow">ALSO EXPLORING / NEURAL DECODING</span><h3>Brain-to-text speech decoding</h3><p>A PyTorch sequence-modeling pipeline, five ablation variants, and an end-to-end lesson about decoding.</p></div><span class="more-arrow" aria-hidden="true">{ARROW}</span></a></section>
     <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel rigid-flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, and checking channel connectivity before manufacturing review.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>500 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
-    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
+    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}" target="_blank" rel="noopener noreferrer">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
     html+=footer()
     (DIST/'index.html').write_text(html)
 
@@ -238,7 +238,7 @@ def resume_rich_text(text):
             url = 'https://' + label
         else:
             url = 'https://github.com/' + label
-        attrs = '' if url.startswith('mailto:') else ' target="_blank" rel="noopener noreferrer"'
+        attrs = ' target="_blank" rel="noopener noreferrer"'
         parts.append(f'<a class="resume-inline-link" href="{escape(url, quote=True)}"{attrs}>{escape(label)}</a>')
         cursor = match.start() + len(label)
     parts.append(escape(text[cursor:]))
