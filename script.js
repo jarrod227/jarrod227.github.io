@@ -108,38 +108,55 @@
   const render = () => {
     context.clearRect(0, 0, width, height);
     for (const star of stars) {
-      const x = ((star.x * width - clock * star.speed) % width + width) % width;
-      const y = star.y * height;
-      const pulse = 0.36 + 0.64 * (0.5 + 0.5 * Math.sin(clock * star.frequency + star.phase));
-      context.globalAlpha = star.opacity * pulse;
-      context.fillStyle = star.blue ? '#a9d2ff' : '#e9f3ff';
+      // Scale drift with the window, so it remains visible on phones as well.
+      const x = ((star.x - clock * star.speed) % 1 + 1) % 1 * width;
+      const y = star.y * height + Math.sin(clock * 0.18 + star.phase) * height * 0.004;
+      const pulse = 0.15 + 0.85 * (0.5 + 0.5 * Math.sin(clock * star.frequency + star.phase));
+      const edge = Math.min(1, x / 16, (width - x) / 16);
+      context.globalAlpha = star.opacity * pulse * Math.max(0, edge);
+      context.fillStyle = star.blue ? '#b4d9ff' : '#f1f7ff';
       context.beginPath();
       context.arc(x, y, star.radius, 0, Math.PI * 2);
       context.fill();
-      if (star.radius > 1.2) {
-        context.globalAlpha *= 0.18;
+      if (star.radius > 1.1) {
+        context.globalAlpha *= 0.2;
         context.beginPath();
         context.arc(x, y, star.radius * 3, 0, Math.PI * 2);
         context.fill();
       }
     }
-    // An occasional short meteor remains inside the upper window opening.
-    const cycle = clock % 18;
-    if (clock > 5 && cycle > 7 && cycle < 8.1 && width > 200) {
-      const progress = (cycle - 7) / 1.1;
-      const x = width * (0.7 - progress * 0.34);
-      const y = height * (0.12 + progress * 0.24);
-      const length = Math.min(70, width * 0.13);
-      const gradient = context.createLinearGradient(x, y, x + length, y - length * 0.6);
-      gradient.addColorStop(0, '#d5eaff');
-      gradient.addColorStop(1, '#b8d8ff00');
-      context.globalAlpha = Math.sin(progress * Math.PI) * 0.6;
+    // The first shooting star appears shortly after arrival, then occasionally.
+    // Both paths fit inside this canvas, above the laptop and between the frames.
+    for (const meteor of [
+      { period: 10, delay: 1.5, x: 0.87, y: 0.1, dx: 0.43, dy: 0.4 },
+      { period: 17, delay: 6.5, x: 0.62, y: 0.22, dx: 0.35, dy: 0.32 }
+    ]) {
+      const elapsed = clock - meteor.delay;
+      if (elapsed < 0) continue;
+      const cycle = elapsed % meteor.period;
+      const duration = 1.45;
+      if (cycle >= duration) continue;
+      const progress = cycle / duration;
+      const x = width * (meteor.x - progress * meteor.dx);
+      const y = height * (meteor.y + progress * meteor.dy);
+      const tailX = x + width * 0.11;
+      const tailY = y - height * 0.1;
+      const gradient = context.createLinearGradient(x, y, tailX, tailY);
+      gradient.addColorStop(0, '#f0f8ff');
+      gradient.addColorStop(0.25, '#b5dcffb3');
+      gradient.addColorStop(1, '#b5dcff00');
+      context.globalAlpha = Math.sin(progress * Math.PI) * 0.9;
       context.strokeStyle = gradient;
-      context.lineWidth = 1;
+      context.lineWidth = Math.max(1, Math.min(1.7, width / 430));
+      context.lineCap = 'round';
       context.beginPath();
       context.moveTo(x, y);
-      context.lineTo(x + length, y - length * 0.6);
+      context.lineTo(tailX, tailY);
       context.stroke();
+      context.fillStyle = '#e5f4ff';
+      context.beginPath();
+      context.arc(x, y, Math.max(1, width / 470), 0, Math.PI * 2);
+      context.fill();
     }
     context.globalAlpha = 1;
   };
@@ -153,11 +170,12 @@
     canvas.height = Math.round(height * ratio);
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     seed = 227;
-    const count = Math.min(135, Math.max(28, Math.floor(width / 5)));
+    const count = Math.min(160, Math.max(45, Math.floor(width / 4.5)));
+    const sizeScale = Math.max(0.55, Math.min(1, width / 600));
     stars = Array.from({ length: count }, () => ({
-      x: random(), y: random(), radius: 0.4 + random() * 1.1,
-      phase: random() * Math.PI * 2, frequency: 0.5 + random() * 0.9,
-      speed: 0.45 + random() * 1.8, opacity: 0.3 + random() * 0.65,
+      x: random(), y: random(), radius: (0.55 + random() * 1.15) * sizeScale,
+      phase: random() * Math.PI * 2, frequency: 1.1 + random() * 1.9,
+      speed: 0.008 + random() * 0.016, opacity: 0.55 + random() * 0.45,
       blue: random() > 0.6
     }));
     render();
