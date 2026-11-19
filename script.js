@@ -240,6 +240,43 @@ function createCodeScreen() {
   return { fit, draw };
 }
 
+function createScopeScreen() {
+  const canvas = document.getElementById('scope-screen');
+  const stage = document.querySelector('.night-stage');
+  const ctx = canvas?.getContext('2d');
+  if (!ctx || !stage) return { fit() {}, draw() {} };
+  const width = 320, height = 220;
+  ctx.setTransform(2, 0, 0, 2, 0, 0);
+  const fit = () => fitArtworkScreen(canvas, stage, width, height,
+    [[635, 536], [703, 532], [710, 572], [642, 578]]);
+  const draw = clock => {
+    ctx.fillStyle = '#081b26';ctx.fillRect(0, 0, width, height);
+    ctx.strokeStyle = '#80b4c315';ctx.lineWidth = 1;
+    for (let x = 12; x < width; x += 30) {
+      ctx.beginPath();ctx.moveTo(x, 22);ctx.lineTo(x, 197);ctx.stroke();
+    }
+    for (let y = 25; y < 200; y += 25) {
+      ctx.beginPath();ctx.moveTo(12, y);ctx.lineTo(308, y);ctx.stroke();
+    }
+    // A slow rolling sweep of two connected channels, kept within the original LCD.
+    const sweep = clock * 0.9;
+    for (const [baseline, amplitude, color, phase] of [[98, 30, '#b9c46c', 0], [133, 15, '#6baab9', 1.1]]) {
+      ctx.beginPath();
+      for (let x = 12; x <= 308; x++) {
+        const t = (x - 12) / 296 * Math.PI * 4 + sweep + phase;
+        const y = baseline + Math.sin(t) * amplitude + Math.sin(t * 2.1) * amplitude * 0.11;
+        if (x === 12) ctx.moveTo(x, y);else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = color;ctx.lineWidth = 2.4;ctx.shadowColor = color;ctx.shadowBlur = 3;ctx.stroke();
+    }
+    ctx.shadowBlur = 0;ctx.font = '12px ui-monospace, monospace';
+    ctx.fillStyle = '#89adba';ctx.fillText('RUN', 15, 15);ctx.fillText('1 ms', 258, 15);
+    ctx.fillStyle = '#b9c46c';ctx.fillText('1  500mV', 14, 212);
+    ctx.fillStyle = '#6baab9';ctx.fillText('2  200mV', 171, 212);
+  };
+  return { fit, draw };
+}
+
 // The desk companion shows the visitor's local time between occasional expressions.
 function createDeskPet() {
   const canvas = document.getElementById('desk-pet-screen');
@@ -417,6 +454,7 @@ function createDeskPet() {
   if (!context) return;
 
   const codeScreen = createCodeScreen();
+  const scopeScreen = createScopeScreen();
   const deskPet = createDeskPet();
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let paused = reducedMotion.matches;
@@ -489,6 +527,7 @@ function createDeskPet() {
     }
     context.globalAlpha = 1;
     codeScreen.draw(clock, delta);
+    scopeScreen.draw(clock);
     deskPet.draw();
   };
 
@@ -510,6 +549,7 @@ function createDeskPet() {
       blue: random() > 0.6
     }));
     codeScreen.fit();
+    scopeScreen.fit();
     deskPet.fit();
     render();
   };
