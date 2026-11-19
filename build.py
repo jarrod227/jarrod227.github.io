@@ -74,22 +74,22 @@ projects = [
     {
         'slug': 'hd-emg', 'number': '03', 'category': 'NEURAL INTERFACES × HARDWARE',
         'title': 'Closer to the signal.', 'name': '32-channel HD-EMG interface',
-        'summary': 'A high-density rigid-flex electrode interface for neural recording research in CMU’s Neuromechatronics Lab.',
-        'tags': ['KiCad', 'Rigid-flex PCB', 'Python', 'HD-EMG'],
+        'summary': 'A high-density flex electrode interface for neural recording research in CMU’s Neuromechatronics Lab.',
+        'tags': ['KiCad', 'Flex PCB', 'Python', 'HD-EMG'],
         'period': 'Sep 2026 — present', 'role': 'Graduate researcher · Neuromechatronics Lab',
-        'status': 'Design and manufacturing review', 'repo': None,
-        'metrics': [('32', 'electrode channels'), ('8 × 4', 'electrode array'), ('500 mm', 'flex lead')],
+        'status': 'In fabrication · 16 units ordered', 'repo': None,
+        'metrics': [('32', 'electrode channels'), ('8 × 4', 'electrode array'), ('300 mm', 'flex lead')],
         'lead': 'Build the recording interface that the experiment needs.',
-        'overview': 'In the Neuromechatronics Lab at Carnegie Mellon University, advised by Douglas Weber, I am designing a 32-channel high-density EMG rigid-flex PCB. The design combines an 8 × 4 electrode array, a 500 mm flex lead, and an Omnetics connector.',
+        'overview': 'In the Neuromechatronics Lab at Carnegie Mellon University, advised by Douglas Weber, I designed a 32-channel high-density EMG flex PCB with polyimide and FR-4 stiffeners. The design combines an 8 × 4 electrode array at 8 mm pitch, a 300 mm flex lead, and an Omnetics connector.',
         'contributions': [
-            ('Electrode interface design', 'Developed the rigid-flex PCB in KiCad around the array, flex lead, connector, and channel mapping requirements.'),
+            ('Electrode interface design', 'Developed the flex PCB in KiCad around the array, flex lead, connector, and channel mapping requirements.'),
             ('Design automation', 'Used Python to automate component and layout generation, making repeated geometry and channel assignments easier to manage.'),
-            ('Connectivity and review', 'Verified channel connectivity in the design files and prepared preliminary manufacturing files for review.')
+            ('Verification and manufacturing', 'Verified channel connectivity in the design files, worked through the fabricator’s DFM/DFA review, prepared the assembly drawing, and approved the production Gerbers.')
         ],
         'challenge_title': 'Keep geometry and channel identity consistent',
         'challenge': 'For an electrode array, spatial arrangement and electrical mapping must agree. My work combines layout automation with connectivity checks so the design can be reviewed as a recording interface, with a clear mapping from electrode locations to connector channels.',
-        'results': [('Array', '32 channels arranged as an 8 × 4 electrode array.'), ('Interconnect', '500 mm flex lead and Omnetics connector included in the design.'), ('Design checks', 'Channel connectivity checked in design files; preliminary manufacturing output prepared.')],
-        'limits': 'This work is at the design and manufacturing-review stage. Fabrication yield, recording quality, and in-use performance are not claimed here. The illustration on this page is a conceptual array diagram, not a manufacturing drawing.',
+        'results': [('Array', '32 channels in an 8 × 4 array at 8 mm pitch, with 4.22 mm electrode pads.'), ('Interconnect', '300 mm flex lead at 0.10 mm trace and space, ending in an Omnetics connector.'), ('Design checks', 'Zero DRC and ERC violations in KiCad; fabricator DFM/DFA review completed and 16 units ordered.')],
+        'limits': 'The boards are in fabrication and have not yet been tested. Fabrication yield, recording quality, and in-use performance are not claimed here. The illustration on this page is a conceptual array diagram, not a manufacturing drawing.',
         'source_label': 'Ask about my research', 'source': '/#contact',
     },
     {
@@ -160,7 +160,7 @@ def write_visuals():
     traces=''.join(f'<path d="M{122+x*47} 292V{314+x*3}H568" fill="none" stroke="#4cb8ae" stroke-opacity=".35"/>' for x in range(8))
     board=f'''<text x="40" y="43" font-size="12" letter-spacing="3">ELECTRODE INTERFACE / CONCEPT</text><rect x="86" y="90" width="398" height="230" rx="16" fill="#143e40" stroke="#5aaca2"/>{traces}{electrodes}<path d="M484 165H575V245H484" fill="#66573b" stroke="#b89d60"/><rect x="575" y="150" width="57" height="108" rx="5" fill="#242b35" stroke="#95a4b2"/>'''
     board+=''.join(f'<rect x="586" y="{160+i*9}" width="34" height="3" fill="#a9b9be"/>' for i in range(10))
-    board+='<text x="90" y="369" font-size="15">8 × 4 array</text><text x="348" y="369" font-size="15">32 channels</text><text x="540" y="369" font-size="15">Rigid-flex</text>'
+    board+='<text x="90" y="369" font-size="15">8 × 4 array</text><text x="348" y="369" font-size="15">32 channels</text><text x="540" y="369" font-size="15">Flex PCB</text>'
     (a/'hd-emg.svg').write_text(svg_shell(board,'Conceptual 32-channel electrode interface with an 8 by 4 array and connector'))
     fw='''<text x="40" y="43" font-size="12" letter-spacing="3">MOTOR CONTROL / ARCHITECTURE</text><rect x="270" y="106" width="180" height="142" rx="12" fill="#182f48" stroke="#6ca4cf"/><text x="360" y="150" text-anchor="middle" font-size="24" fill="#eef4fa">STM32H723</text><text x="360" y="180" text-anchor="middle" font-size="14">FreeRTOS · PD control</text><text x="360" y="214" text-anchor="middle" fill="#73e0cc" font-size="26">1 kHz</text>'''
     for i,(x,y) in enumerate([(50,102),(50,224),(527,102),(527,224)]):
@@ -216,7 +216,7 @@ def home():
     <section id="work" class="container work-section"><div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2>Selected projects</h2></div><p>Real signals, real constraints.<br> A few systems I’ve been working on.</p></div><div class="projects-grid">'''
     for i,p in enumerate(projects[:4]): html+=card(p,i==0)
     html+=f'''</div><a class="more-project" href="/projects/brain-to-text.html"><div><span class="eyebrow">ALSO EXPLORING / NEURAL DECODING</span><h3>Brain-to-text speech decoding</h3><p>A PyTorch sequence-modeling pipeline, five ablation variants, and an end-to-end lesson about decoding.</p></div><span class="more-arrow" aria-hidden="true">{ARROW}</span></a></section>
-    <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel rigid-flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, and checking channel connectivity before manufacturing review.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>500 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
+    <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, checking channel connectivity, and taking the board through fabrication.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>300 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
     <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}" target="_blank" rel="noopener noreferrer">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
     html+=footer()
     (DIST/'index.html').write_text(html)

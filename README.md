@@ -18,7 +18,7 @@ changes. They are preserved by the generator. Static assets are in
 ## Content provenance
 
 - Profile photo and ColdLab mark: supplied by Jarrod in this conversation.
-- Resume PDF: converted from the supplied `Jiayu Yang resume v2.docx`.
+- Resume PDF: converted from `Jiayu Yang resume v3.docx` (v2 with the HD-EMG lead length, flex construction and fabrication status corrected, 2026-11-19).
 - Shared-autonomy project and measured boundaries: the project's public README,
   https://github.com/jarrod227/emg-shared-autonomy-arm (reviewed 2026-11-17).
 - EMG band image: the same repository, `docs/images/band_worn.jpg` (Apache-2.0).

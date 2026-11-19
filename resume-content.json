@@ -80,11 +80,11 @@
     "bullet": false
   },
   {
-    "text": "Designed a 32-channel high-density electromyography (HD-EMG) rigid-flex PCB in KiCad, integrating an 8×4 electrode array, 500 mm flex lead, and Omnetics connector.",
+    "text": "Designed a 32-channel high-density electromyography (HD-EMG) flex PCB in KiCad, integrating an 8×4 electrode array, 300 mm flex lead, and Omnetics connector.",
     "bullet": true
   },
   {
-    "text": "Automated PCB component and layout generation with Python; verified channel connectivity in design files and prepared preliminary manufacturing files for review.",
+    "text": "Automated PCB component and layout generation with Python; verified channel connectivity and took the board through fabricator DFM/DFA review to production (16 units ordered).",
     "bullet": true
   },
   {
