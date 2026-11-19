@@ -2,12 +2,14 @@
 from pathlib import Path
 from html import escape
 import json
+import re
 from hashlib import sha256
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).parent
 DIST = ROOT
 ASSET_VERSION = sha256((ROOT / 'night.css').read_bytes() + (ROOT / 'script.js').read_bytes()).hexdigest()[:12]
+RESUME_PDF_VERSION = sha256((ROOT / 'assets/jiayu-yang-resume.pdf').read_bytes()).hexdigest()[:12]
 ORIGIN = 'https://jarrod227.github.io'
 ARROW = ''
 GITHUB = 'https://github.com/jarrod227'
@@ -217,9 +219,33 @@ def home():
     html+=footer()
     (DIST/'index.html').write_text(html)
 
+
+def resume_rich_text(text):
+    # Link the visible URLs, email addresses, and GitHub owner/repository labels.
+    pattern = re.compile(r'https?://[^\s|<>]+|(?:www\.)?(?:github\.com|linkedin\.com)/[^\s|<>]+|[\w.%+-]+@[\w.-]+\.[A-Za-z]{2,}|(?<=GitHub: )[\w.-]+/[\w.-]+')
+    parts = []
+    cursor = 0
+    for match in pattern.finditer(text):
+        parts.append(escape(text[cursor:match.start()]))
+        label = match.group().rstrip('.,;')
+        if '@' in label and '://' not in label:
+            url = 'mailto:' + label
+        elif label.startswith(('http://', 'https://')):
+            url = label
+        elif label.startswith(('github.com/', 'linkedin.com/', 'www.')):
+            url = 'https://' + label
+        else:
+            url = 'https://github.com/' + label
+        attrs = '' if url.startswith('mailto:') else ' target="_blank" rel="noopener noreferrer"'
+        parts.append(f'<a class="resume-inline-link" href="{escape(url, quote=True)}"{attrs}>{escape(label)}</a>')
+        cursor = match.start() + len(label)
+    parts.append(escape(text[cursor:]))
+    return ''.join(parts)
+
+
 def resume():
     html=head('Resume — Jiayu (Jarrod) Yang','Read or download Jiayu Yang’s resume: CMU research, embedded systems, robotics, and biosignal projects.','/resume.html')+header()
-    html+=f'''<main id="main"><section class="container resume-hero" id="top"><a href="/" class="back-link">Home</a><p class="eyebrow">RESUME</p><div class="resume-title-row"><div><h1>Jiayu (Jarrod) Yang</h1><p>Graduate Researcher · Carnegie Mellon University</p></div><a class="button button-primary" href="/assets/jiayu-yang-resume.pdf" download="Jiayu-Yang-Resume.pdf">Download PDF </a></div><div class="resume-contact">{ext('/#contact','Email')}{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}</div></section><article class="container resume-document" aria-label="Resume content">'''
+    html+=f'''<main id="main"><section class="container resume-hero" id="top"><a href="/" class="back-link">Home</a><p class="eyebrow">RESUME</p><div class="resume-title-row"><div><h1>Jiayu (Jarrod) Yang</h1><p>Graduate Researcher · Carnegie Mellon University</p></div><a class="button button-primary" href="/assets/jiayu-yang-resume.pdf?v={RESUME_PDF_VERSION}" download="Jiayu-Yang-Resume.pdf">Download PDF </a></div><div class="resume-contact">{ext('/#contact','Email')}{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}</div></section><article class="container resume-document" aria-label="Resume content">'''
     sections={'Education','Skills','Research Experience','Projects'}
     titles={
         'Carnegie Mellon University | Pittsburgh, PA, USA',
@@ -243,9 +269,9 @@ def resume():
             html+=f'<h3>{escape(text)}</h3>'
         elif p['bullet']:
             if not in_list:html+='<ul>';in_list=True
-            html+=f'<li>{escape(text)}</li>'
+            html+=f'<li>{resume_rich_text(text)}</li>'
         else:
-            html+=f'<p>{escape(text)}</p>'
+            html+=f'<p>{resume_rich_text(text)}</p>'
     if in_list:html+='</ul>'
     if opened:html+='</section>'
     html+='</article></main>'+footer()
