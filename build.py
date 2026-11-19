@@ -202,15 +202,6 @@ def home():
     for i,p in enumerate(projects[:4]): html+=card(p,i==0)
     html+=f'''</div><a class="more-project" href="/projects/brain-to-text.html"><div><span class="eyebrow">ALSO EXPLORING / NEURAL DECODING</span><h3>Brain-to-text speech decoding</h3><p>A PyTorch sequence-modeling pipeline, five ablation variants, and an end-to-end lesson about decoding.</p></div><span class="more-arrow" aria-hidden="true">{ARROW}</span></a></section>
     <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel rigid-flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, and checking channel connectivity before manufacturing review.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>500 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
-    <section id="skills" class="container skills-section" aria-labelledby="skills-heading">
-        <h2 id="skills-heading">Skills &amp; tools</h2>
-        <div class="skills-grid">
-          <div><h3>Hardware &amp; sensing</h3><p>EMG / EOG · Analog front ends<br>KiCad · Rigid-flex PCB design</p></div>
-          <div><h3>Embedded firmware</h3><p>C / C++ · STM32 · FreeRTOS<br>CAN · ADC / DMA · I²C / UART</p></div>
-          <div><h3>Signal processing &amp; ML</h3><p>Python · Kalman filtering · Sensor fusion<br>scikit-learn · PyTorch</p></div>
-          <div><h3>Robotics &amp; control</h3><p>ROS 2 · MoveIt 2<br>Motion planning · Joint control</p></div>
-        </div>
-    </section>
     <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><span class="email-address">{EMAIL}</span></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("https://mail.google.com/mail/?view=cm&fs=1&to="+EMAIL,"Compose in Gmail")}{ext("mailto:"+EMAIL,"Open email app")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
     html+=footer()
     (DIST/'index.html').write_text(html)
