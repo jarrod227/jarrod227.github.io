@@ -36,3 +36,11 @@ body{font-size:16px;line-height:1.85;background:var(--bg);isolation:isolate}body
 @media(max-width:850px){.about-profile{grid-template-columns:180px minmax(0,1fr);gap:30px}.about-portrait{width:180px;height:225px}.skills-section{padding:35px}.skills-grid{column-gap:30px}}
 @media(max-width:720px){.about-profile{grid-template-columns:1fr;gap:30px}.about-portrait{width:210px;height:263px}.skills-section{margin-block:64px;background:#0a111cf5;backdrop-filter:none}.skills-grid{column-gap:26px}}
 @media(max-width:540px){.about-portrait{width:200px;height:250px}.skills-section{width:calc(100% - 28px);margin-block:48px;padding:28px 22px;border-radius:13px}.skills-grid{grid-template-columns:1fr;gap:0}.skills-grid>div{padding:25px 0}.skills-grid h3{font-size:18px}.skills-grid p{font-size:16px}.skills-section>h2{font-size:29px;margin-bottom:20px}}
+
+/* Self-hosted brand glyphs accompany text labels on every social link. */
+.social-link{gap:9px;white-space:nowrap}
+.social-icon{display:block;width:20px;height:20px;flex:0 0 20px;fill:currentColor}
+.social-icon-github{color:#dce6f0}.social-icon-linkedin{color:#8cc5ff}.social-icon-instagram{color:#f0a8cc}.social-icon-xiaohongshu{color:#fff;background:#ff2442;border-radius:5px;width:22px;height:22px;flex-basis:22px}
+.about-social-links{display:flex;flex-wrap:wrap;align-items:center;gap:16px 27px;margin-top:28px}
+.about-social-links .text-link{font-size:14px;min-height:32px}
+@media(max-width:540px){.hero .quick-links{gap:23px}.about-social-links{gap:13px 22px}}

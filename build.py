@@ -3,6 +3,7 @@ from pathlib import Path
 from html import escape
 import json
 from hashlib import sha256
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).parent
 DIST = ROOT
@@ -12,6 +13,9 @@ ARROW = ''
 GITHUB = 'https://github.com/jarrod227'
 LINKEDIN = 'https://www.linkedin.com/in/jiayuyang227/'
 EMAIL = 'jarrodyang227@gmail.com'
+INSTAGRAM = 'https://www.instagram.com/jarrodyang227/'
+XIAOHONGSHU = 'https://www.xiaohongshu.com/user/profile/61d6fb76000000001000f3a0'
+SOCIAL_ICONS = json.loads((ROOT / 'assets/social-icons.json').read_text())
 
 projects = [
     {
@@ -130,7 +134,14 @@ projects = [
 def ext(url, label, cls='text-link'):
     outside = not url.startswith(('mailto:', '/'))
     attrs = ' target="_blank" rel="noopener noreferrer"' if outside else ''
-    return f'<a class="{cls}" href="{escape(url, quote=True)}"{attrs}>{label} {ARROW}</a>'
+    hostname = (urlsplit(url).hostname or '').removeprefix('www.')
+    brand = {'github.com': 'github', 'linkedin.com': 'linkedin',
+             'instagram.com': 'instagram', 'xiaohongshu.com': 'xiaohongshu'}.get(hostname)
+    icon = ''
+    if brand:
+        cls += ' social-link'
+        icon = f'<svg class="social-icon social-icon-{brand}" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><path d="{SOCIAL_ICONS[brand]}"/></svg>'
+    return f'<a class="{cls}" href="{escape(url, quote=True)}"{attrs}>{icon}<span>{label}</span></a>'
 
 def svg_shell(content, label):
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="720" height="430" viewBox="0 0 720 430" role="img" aria-label="{label}">
@@ -195,7 +206,7 @@ def home():
       <div class="about-heading"><div><p class="eyebrow">ABOUT</p><h2>About me</h2></div></div>
       <div class="about-profile">
         <img class="about-portrait" src="/assets/jarrod-yang.webp" alt="Jiayu (Jarrod) Yang" width="240" height="300" loading="lazy">
-        <div class="about-copy"><p class="large-copy">My background is in electrical and computer engineering. My interests live where human signals meet physical systems.</p><p>I earned my B.S. in ECE with a mathematics minor at Rutgers, and I’m now pursuing an M.S. in Biomedical Engineering on the research track at CMU, with graduation expected in May 2028.</p><p>Alongside research, I contribute motor-control firmware to CMU Robotics Club’s Laika quadruped, connecting my interests in embedded systems and robotics.</p><p>Outside the lab, I enjoy cooking, playing soccer, and playing guitar. Japanese curry and katsudon are two of my favorite dishes.</p>{ext(LINKEDIN,'More on LinkedIn')}</div>
+        <div class="about-copy"><p class="large-copy">My background is in electrical and computer engineering. My interests live where human signals meet physical systems.</p><p>I earned my B.S. in ECE with a mathematics minor at Rutgers, and I’m now pursuing an M.S. in Biomedical Engineering on the research track at CMU, with graduation expected in May 2028.</p><p>Alongside research, I contribute motor-control firmware to CMU Robotics Club’s Laika quadruped, connecting my interests in embedded systems and robotics.</p><p>Outside the lab, I enjoy cooking, playing soccer, and playing guitar. Japanese curry and katsudon are two of my favorite dishes.</p><div class="about-social-links" aria-label="Social profiles">{ext(LINKEDIN,'LinkedIn')}{ext(INSTAGRAM,'Instagram')}{ext(XIAOHONGSHU,'小红书')}</div></div>
       </div>
     </section>
     <section id="work" class="container work-section"><div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2>Selected projects</h2></div><p>Real signals, real constraints.<br> A few systems I’ve been working on.</p></div><div class="projects-grid">'''
