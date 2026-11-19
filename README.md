@@ -32,3 +32,7 @@ changes. They are preserved by the generator. Static assets are in
 Live website: https://jarrod227.github.io
 
 GitHub Pages publishes the `main` branch from the repository root.
+
+## Night studio design
+
+The illustrated room and glasses-wearing anime portrait are based on the author’s supplied photograph. The final studio asset is `assets/night-studio-v2.webp`. Stars are animated inside the window with Canvas, with a pause control and reduced-motion support. Layout and typography overrides live in `night.css`.
