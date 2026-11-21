@@ -4,7 +4,7 @@
     "bullet": false
   },
   {
-    "text": "jarrodyang227@gmail.com | U.S. Permanent Resident | github.com/jarrod227 | linkedin.com/in/jiayuyang227",
+    "text": "jarrodyang227@gmail.com |github.com/jarrod227 | linkedin.com/in/jiayuyang227",
     "bullet": false
   },
   {
@@ -72,7 +72,7 @@
     "bullet": false
   },
   {
-    "text": "Neural Recording Hardware",
+    "text": "Neuromuscular Recording Hardware",
     "bullet": false
   },
   {
@@ -124,7 +124,7 @@
     "bullet": true
   },
   {
-    "text": "Added event gating and markerless YOLO-based perception, achieving zero false triggers over 10 minutes of normal activity and object localization within ~1 cm.",
+    "text": "Added event gating and markerless YOLO-based perception, recording zero discrete-intent false triggers over 10 minutes of normal activity; ArUco baseline localization within ~1 cm at ≤0.5 m.",
     "bullet": true
   },
   {
@@ -164,7 +164,7 @@
     "bullet": true
   },
   {
-    "text": "Found the phoneme-level gain did not carry over: the baseline retained the lowest word error rate (18.07%) with a 5-gram language model; traced the gap to WFST decoding.",
+    "text": "Found the phoneme-level gain did not carry over: the baseline retained the lowest word error rate (18.07%) with a 5-gram language model after WFST decoding.",
     "bullet": true
   }
 ]

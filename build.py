@@ -43,6 +43,7 @@ projects = [
             ('Embedded decoding', 'Three channels; fixed-point LDA; 20 Hz decisions on STM32F103.'),
             ('Cross-donning evaluation', '93.3–95.1% offline window accuracy, one wearer and five electrode applications.'),
             ('Ordinary-activity trial', 'Zero discrete-intent false triggers in 10 minutes. The separate proportional view stream had six unintended direction excursions.'),
+            ('Perception', 'The ArUco pose baseline stays within about 1 cm of tape-measured distance up to 0.5 m. The markerless stereo path has bounded bench checks, not an absolute-accuracy figure.'),
             ('Motion integration', 'MoveIt backend verified separately on a simulated Panda; synthetic integration also runs with a timer backend.')
         ],
         'limits': 'Physical grasping and handoff on the SO-ARM101 have not been validated. Light contractions remain unreliable, and the reported classification results are from one wearer. The discrete-intent false-trigger result does not establish zero unintended motion in the proportional view stream.',
@@ -74,7 +75,7 @@ projects = [
     {
         'slug': 'hd-emg', 'number': '03', 'category': 'NEURAL INTERFACES × HARDWARE',
         'title': 'Closer to the signal.', 'name': '32-channel HD-EMG interface',
-        'summary': 'A high-density flex electrode interface for neural recording research in CMU’s Neuromechatronics Lab.',
+        'summary': 'A high-density flex electrode interface for neuromuscular recording research in CMU’s Neuromechatronics Lab.',
         'tags': ['KiCad', 'Flex PCB', 'Python', 'HD-EMG'],
         'period': 'Sep 2026 — present', 'role': 'Graduate researcher · Neuromechatronics Lab',
         'status': 'In fabrication · 16 units ordered', 'repo': None,
@@ -124,7 +125,7 @@ projects = [
         'metrics': [('5', 'ablation variants'), ('19.75%', 'best variant phoneme error rate'), ('20.48%', 'baseline phoneme error rate')],
         'lead': 'A better intermediate metric needs an end-to-end check.',
         'overview': 'I built a PyTorch pipeline for intracortical speech decoding on the Brain-to-Text ’24 benchmark. A bidirectional GRU encoder feeds a diphone CTC decoder, with skip-diphone and smoothness-loss variants evaluated through a five-variant ablation study and Kaldi WFST decoding.',
-        'contributions': [('Sequence modeling', 'Implemented the GRU encoder and diphone CTC pipeline, then explored skip-diphone and smoothness objectives.'), ('Controlled comparisons', 'Ran five ablation variants to examine phoneme-level changes against the baseline.'), ('Word-level diagnosis', 'Compared phoneme and word error rates, then traced the mismatch between their improvements to the WFST decoding stage.')],
+        'contributions': [('Sequence modeling', 'Implemented the GRU encoder and diphone CTC pipeline, then explored skip-diphone and smoothness objectives.'), ('Controlled comparisons', 'Ran five ablation variants to examine phoneme-level changes against the baseline.'), ('Word-level diagnosis', 'Compared phoneme and word error rates and found that the phoneme-level gain did not carry over to word error after WFST decoding.')],
         'challenge_title': 'Check whether phoneme gains survive decoding',
         'challenge': 'The best variant reduced phoneme error rate from 20.48% to 19.75%, but this gain did not translate to lower word error. The baseline retained the best reported word error rate, 18.07%, with a 5-gram language model. The result made the decoding interface as important to examine as the neural model itself.',
         'results': [('Phoneme error rate', '19.75% for the best variant, compared with 20.48% for the baseline.'), ('Word error rate', 'The baseline remained best at 18.07% with a 5-gram language model.'), ('Experiment scope', 'Five model/loss variants evaluated in the course-project ablation study.')],
@@ -135,7 +136,7 @@ projects = [
 
 def ext(url, label, cls='text-link'):
     outside = not url.startswith(('/', '#'))
-    attrs = ' target="_blank" rel="noopener noreferrer"' if outside else ''
+    attrs = ' target="_blank" rel="noopener noreferrer"' if outside and not url.startswith('mailto:') else ''
     hostname = (urlsplit(url).hostname or '').removeprefix('www.')
     brand = {'github.com': 'github', 'linkedin.com': 'linkedin',
              'instagram.com': 'instagram', 'xiaohongshu.com': 'xiaohongshu'}.get(hostname)
@@ -182,7 +183,7 @@ def night_scene():
     return '''<div class="night-backdrop" aria-hidden="true"><div class="night-stage"><canvas id="night-sky" class="night-sky"></canvas><canvas id="code-screen" class="code-screen" width="1280" height="880"></canvas><div class="scope-wiring-art"></div><canvas id="scope-screen" class="scope-screen" width="640" height="440"></canvas><canvas id="pc-fans" class="pc-fans" width="480" height="960"></canvas><div class="desk-pet-rest"></div><div class="desk-pet-head"><canvas id="desk-pet-screen" class="desk-pet-screen" width="600" height="400"></canvas></div><div class="typing-hands"></div></div><div class="night-veil"></div></div>'''
 
 def head(title, description, path='/'):
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090f1b"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta property="og:type" content="website"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:image" content="{ORIGIN}/assets/night-workbench-v4.webp"><meta property="og:url" content="{ORIGIN}{path}"><link rel="canonical" href="{ORIGIN}{path}"><link rel="icon" type="image/webp" href="/assets/coldlab.webp"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/night.css?v={ASSET_VERSION}"><script defer src="/script.js?v={ASSET_VERSION}"></script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{night_scene()}<a href="#main" class="skip-link">Skip to content</a>'''
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090f1b"><title>{escape(title)}</title><meta name="description" content="{escape(description,quote=True)}"><meta property="og:type" content="website"><meta property="og:title" content="{escape(title,quote=True)}"><meta property="og:description" content="{escape(description,quote=True)}"><meta property="og:image" content="{ORIGIN}/assets/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta property="og:url" content="{ORIGIN}{path}"><link rel="canonical" href="{ORIGIN}{path}"><link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png"><link rel="apple-touch-icon" href="/assets/apple-touch-icon.png"><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/night.css?v={ASSET_VERSION}"><script defer src="/script.js?v={ASSET_VERSION}"></script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{night_scene()}<a href="#main" class="skip-link">Skip to content</a>'''
 
 def header():
     return f'''<header class="site-header"><div class="container nav-wrap"><a href="/" class="brand" aria-label="Jarrod Yang home"><span class="brand-avatar"><img src="/assets/jarrod-yang.webp" alt="" width="44" height="44" decoding="async"></span><span>JARROD YANG</span></a><button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="navigation"><span></span><span></span></button><nav id="navigation" aria-label="Main navigation"><a href="/#about">About</a><a href="/#work">Work</a><a href="/#research">Research</a><a href="/#contact">Contact</a><a href="/resume.html" class="nav-resume">Resume {ARROW}</a></nav></div></header>'''
@@ -204,7 +205,7 @@ def card(p, featured=False):
 
 def home():
     desc='Jiayu (Jarrod) Yang is a CMU graduate researcher working across biosignal sensing, embedded systems, and robotics. Explore selected projects and research.'
-    html=head('Jarrod Yang’s Website',desc)+header()
+    html=head('Jiayu (Jarrod) Yang — Biosignal Interfaces & Embedded Systems · CMU',desc)+header()
     html+=f'''<main id="main"><section class="hero container" id="top"><div class="hero-copy"><h1 class="name-heading">Jiayu (Jarrod) Yang</h1><p class="affiliation">Graduate Researcher · Neuromechatronics Lab<br>Carnegie Mellon University</p><p class="hero-description">I develop biosignal interfaces, embedded firmware, and robotic systems.</p><div class="hero-actions"><a href="#work" class="button button-primary">Explore my work </a><a href="/resume.html" class="button button-secondary">Resume {ARROW}</a></div><div class="quick-links" aria-label="Profile links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}{ext('mailto:'+EMAIL,'Email')}</div></div></section>
     <section id="about" class="container about-section">
       <div class="about-heading"><div><p class="eyebrow">ABOUT</p><h2>About me</h2></div></div>
@@ -216,8 +217,8 @@ def home():
     <section id="work" class="container work-section"><div class="section-heading"><div><p class="eyebrow">SELECTED WORK</p><h2>Selected projects</h2></div><p>Real signals, real constraints.<br> A few systems I’ve been working on.</p></div><div class="projects-grid">'''
     for i,p in enumerate(projects[:4]): html+=card(p,i==0)
     html+=f'''</div><a class="more-project" href="/projects/brain-to-text.html"><div><span class="eyebrow">ALSO EXPLORING / NEURAL DECODING</span><h3>Brain-to-text speech decoding</h3><p>A PyTorch sequence-modeling pipeline, five ablation variants, and an end-to-end lesson about decoding.</p></div><span class="more-arrow" aria-hidden="true">{ARROW}</span></a></section>
-    <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neural recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, checking channel connectivity, and taking the board through fabrication.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>300 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
-    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}" target="_blank" rel="noopener noreferrer">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
+    <section id="research" class="research-section"><div class="container research-layout"><div><p class="eyebrow">CURRENT RESEARCH</p><h2>Neuromuscular recording<br> <span>hardware</span></h2><p class="research-affiliation">Neuromechatronics Lab<br>Carnegie Mellon University</p></div><div class="research-copy"><p class="large-copy">I’m a graduate researcher working on high-density EMG recording hardware, advised by Douglas Weber.</p><p>My current work centers on a 32-channel flex electrode interface: turning experimental needs into a PCB design, automating repeated layout work, checking channel connectivity, and taking the board through fabrication.</p><div class="research-specs"><div><strong>32</strong><span>channels</span></div><div><strong>8 × 4</strong><span>electrode array</span></div><div><strong>300 <small>mm</small></strong><span>flex lead</span></div></div><a href="/projects/hd-emg.html" class="text-link">Inside the research </a></div></div></section>
+    <section id="contact" class="contact-section"><div class="container contact-layout"><div><p class="eyebrow">CONTACT</p><h2>Let’s connect.</h2><p>Let’s talk about biosignal interfaces, embedded systems, and robotics.</p></div><div class="contact-links"><div class="email-link"><a class="email-address" href="mailto:{EMAIL}">{EMAIL}</a></div><div class="contact-actions"><button class="copy-email" data-copy-email="{EMAIL}">Copy email</button>{ext("mailto:"+EMAIL,"Send email")}</div><div class="quick-links">{ext(GITHUB,'GitHub')}{ext(LINKEDIN,'LinkedIn')}<a href="/resume.html" class="text-link">Resume {ARROW}</a></div></div></div></section></main>'''
     html+=footer()
     (DIST/'index.html').write_text(html)
 
@@ -238,7 +239,7 @@ def resume_rich_text(text):
             url = 'https://' + label
         else:
             url = 'https://github.com/' + label
-        attrs = ' target="_blank" rel="noopener noreferrer"'
+        attrs = '' if url.startswith('mailto:') else ' target="_blank" rel="noopener noreferrer"'
         parts.append(f'<a class="resume-inline-link" href="{escape(url, quote=True)}"{attrs}>{escape(label)}</a>')
         cursor = match.start() + len(label)
     parts.append(escape(text[cursor:]))
@@ -252,7 +253,7 @@ def resume():
     titles={
         'Carnegie Mellon University | Pittsburgh, PA, USA',
         'Rutgers University | New Brunswick, NJ, USA',
-        'Neural Recording Hardware',
+        'Neuromuscular Recording Hardware',
         'Laika Quadruped Robot: Motor-Control Firmware',
         'Biosignal-Driven Shared-Autonomy Assistive Manipulation',
         'Head- and Eye-Controlled Cursor via Electrooculography (EOG) and IMU',

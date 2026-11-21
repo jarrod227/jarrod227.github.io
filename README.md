@@ -18,7 +18,9 @@ changes. They are preserved by the generator. Static assets are in
 ## Content provenance
 
 - Profile photo and ColdLab mark: supplied by Jarrod in this conversation.
-- Resume PDF: converted from `Jiayu Yang resume v3.docx` (v2 with the HD-EMG lead length, flex construction and fabrication status corrected, 2026-11-19).
+- Resume PDF: converted from `Jiayu Yang resume v3.docx` (v2 with the HD-EMG lead length, flex construction and fabrication status corrected, 2026-11-19). Edited 2026-11-21: public copy drops
+  phone number and residency status; wording aligned with the project pages. Update
+  `Jiayu Yang resume v3.docx` to match before the next export.
 - Shared-autonomy project and measured boundaries: the project's public README,
   https://github.com/jarrod227/emg-shared-autonomy-arm (reviewed 2026-11-17).
 - EMG band image: the same repository, `docs/images/band_worn.jpg` (Apache-2.0).
@@ -35,4 +37,4 @@ GitHub Pages publishes the `main` branch from the repository root.
 
 ## Night studio design
 
-The illustrated room and glasses-wearing anime portrait are based on the author’s supplied photograph. The final studio asset is `assets/night-studio-v2.webp`. Stars are animated inside the window with Canvas, with a pause control and reduced-motion support. Layout and typography overrides live in `night.css`.
+The illustrated room and glasses-wearing anime portrait are based on the author’s supplied photograph. The final studio asset is `assets/night-workbench-v4.webp`; `assets/og-image.jpg` is a 1200×630 crop of it for link previews. Stars are animated inside the window with Canvas, with a pause control and reduced-motion support. Layout and typography overrides live in `night.css`.
