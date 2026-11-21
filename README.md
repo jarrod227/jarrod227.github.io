@@ -18,8 +18,8 @@ changes. They are preserved by the generator. Static assets are in
 ## Content provenance
 
 - Profile photo and ColdLab mark: supplied by Jarrod in this conversation.
-- Resume PDF: converted from `Jiayu Yang resume v3.docx` (v2 with the HD-EMG lead length, flex construction and fabrication status corrected, 2026-11-19). Edited 2026-11-21: public copy drops
-  phone number and residency status; wording aligned with the project pages. Update
+- Resume PDF: converted from `Jiayu Yang resume v3.docx` (v2 with the HD-EMG lead length, flex construction and fabrication status corrected, 2026-11-19). Edited 2026-11-21: public copy drops the
+  phone number; wording aligned with the project pages. Update
   `Jiayu Yang resume v3.docx` to match before the next export.
 - Shared-autonomy project and measured boundaries: the project's public README,
   https://github.com/jarrod227/emg-shared-autonomy-arm (reviewed 2026-11-17).
