@@ -197,6 +197,11 @@ def tags(p):
 def visual(p, extra=''):
     if p['slug']=='shared-autonomy':
         return f'<div class="project-visual emg-photo {extra}"><img src="/assets/emg-band.jpg" alt="The project’s three-channel EMG band worn on a forearm" width="700" height="610" loading="lazy"><span class="visual-caption">THE WEARABLE INTERFACE · REAL HARDWARE</span></div>'
+    photos={'laika-firmware':('laika-rig.webp','Two-joint Laika test leg with ODrive motors on the bench rig'),
+            'eog-cursor':('eog-worn.webp','Wearing the cursor prototype: head-mounted sensor box and EOG electrodes on the face')}
+    if p['slug'] in photos:
+        f,alt=photos[p['slug']]
+        return f'<div class="project-visual photo-visual {extra}"><img src="/assets/{f}" alt="{escape(alt)}" width="720" height="430" loading="lazy"></div>'
     file={'laika-firmware':'laika.svg','hd-emg':'hd-emg.svg','eog-cursor':'cursor.svg','brain-to-text':'brain.svg'}[p['slug']]
     return f'<div class="project-visual {extra}"><img src="/assets/{file}" alt="{escape(p["name"])} conceptual diagram" width="720" height="430" loading="lazy"></div>'
 
