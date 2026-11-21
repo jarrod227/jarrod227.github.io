@@ -63,3 +63,7 @@ body{font-size:16px;line-height:1.85;background:var(--bg);isolation:isolate}body
 .desk-pet-rest{background:linear-gradient(173deg,#123449 59%,#183142 68%)}
 .desk-pet-head{background:inherit;transform-origin:57.45% 67.48%}
 .home-page .pet-ready .desk-pet-rest,.home-page .pet-ready .desk-pet-head{opacity:1}
+/* Mobile menu: fully opaque so hero text does not show through */
+nav.open{background:#0a111c}
+/* Let the photo visual fill its card when the card stacks */
+.visual-link>.project-visual{width:100%}
