@@ -114,6 +114,7 @@ projects = [
         'limits': 'Window-level cross-validation accuracy is different from end-to-end interaction success. Left/right gaze classes were not included in the evaluated ML dataset; navigation and centering actions requiring those classes were not evaluated in that mode.',
         'source_label': 'Read the measured performance', 'source': GITHUB + '/capstone_project/blob/main/docs/performance.md',
         'video': 'https://www.youtube.com/watch?v=H4pCKZaqN2I',
+        'hardware': ('eog-hardware.webp', 'The opened head-mounted sensor box on a desk, with its circuit boards, headband and EOG electrode leads', 'The head-mounted sensor box opened up, with the headband and the EOG electrode leads.'),
     },
     {
         'slug': 'brain-to-text', 'number': '05', 'category': 'NEURAL DECODING × MACHINE LEARNING',
@@ -297,6 +298,9 @@ def detail(p,idx):
     html+=f'</div></section><section id="challenge"><p class="eyebrow">ENGINEERING CHALLENGE</p><h2>{p["challenge_title"]}</h2><p>{p["challenge"]}</p></section><section id="results"><p class="eyebrow">RESULTS & SCOPE</p><h2>What the work shows</h2><div class="result-list">'
     for label,result in p['results']: html+=f'<div><h3>{label}</h3><p>{result}</p></div>'
     html+=f'</div><h3 class="limits-title">Current boundaries</h3><p>{p["limits"]}</p>{ext(p["source"],p["source_label"])}</section>'
+    if p.get('hardware'):
+        f,alt,cap=p['hardware']
+        html+=f'''<section class="video-section hardware-section"><p class="eyebrow">THE HARDWARE</p><h2>Inside the prototype</h2><figure class="hardware-figure"><img src="/assets/{f}" alt="{escape(alt)}" width="1000" height="750" loading="lazy"><figcaption>{escape(cap)}</figcaption></figure></section>'''
     if p.get('video'):
         html+=f'''<section class="video-section"><p class="eyebrow">SEE IT IN ACTION</p><h2>Capstone demonstration</h2><a class="video-preview" href="{p['video']}" target="_blank" rel="noopener noreferrer"><img src="/assets/capstone-demo.jpg" alt="Watch the team’s head- and eye-controlled cursor demonstration on YouTube" width="480" height="360" loading="lazy"><span class="play-button" aria-hidden="true">▶</span></a>{ext(p['video'],'Watch the demo on YouTube')}</section>'''
     nxt=projects[(idx+1)%len(projects)]

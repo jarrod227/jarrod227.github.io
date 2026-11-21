@@ -76,3 +76,8 @@ footer a,.contact-actions a,.contact-actions button{display:inline-flex;align-it
 .detail-visual>.photo-visual>img{height:600px;max-height:none}
 .detail-visual>.photo-visual>img[src*="eog-worn"]{object-position:center 70%}
 @media(max-width:720px){.detail-visual>.photo-visual>img{height:auto;aspect-ratio:720/430}}
+/* Hardware close-up on project pages */
+.hardware-section{margin-bottom:56px}
+.hardware-figure{margin:20px 0 0;max-width:650px}
+.hardware-figure img{display:block;width:100%;height:auto;border-radius:9px;border:1px solid var(--line)}
+.hardware-figure figcaption{margin-top:12px;font-size:.9rem;color:var(--muted,#8ca0b3)}
